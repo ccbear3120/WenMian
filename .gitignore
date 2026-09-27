@@ -24,3 +24,4 @@ out/
 !.vscode/extensions.json
 *.code-workspace 
 music_local_bak/
+__pycache__/
