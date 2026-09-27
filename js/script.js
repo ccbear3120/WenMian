@@ -310,6 +310,32 @@
     },
   };
 
+  // ---------- 2.55 GeoLang（按网络 IP 判定国家，仅用于默认语言） ----------
+  const GeoLang = {
+    KEY: 'geoCountry',
+    async country() {
+      try {
+        const c = safeJsonParse(localStorage.getItem(GeoLang.KEY), null);
+        if (c && Date.now() - c.ts < 86400000 && c.cc) return c.cc;
+      } catch { /* 忽略 */ }
+      try {
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 5000);
+        const res = await fetch('https://ipapi.co/json/', { signal: ctrl.signal });
+        clearTimeout(timer);
+        if (res.ok) {
+          const j = await res.json();
+          const cc = String(j.country_code || '').toUpperCase();
+          try {
+            localStorage.setItem(GeoLang.KEY, JSON.stringify({ cc, ts: Date.now() }));
+          } catch { /* 忽略 */ }
+          return cc;
+        }
+      } catch { /* 忽略 */ }
+      return '';
+    },
+  };
+
   // ---------- 2.6 I18n（中文 / 越南语切换） ----------
   const I18n = {
     dict: {
@@ -502,6 +528,15 @@
       const btn = document.getElementById('lang-button');
       if (btn) btn.addEventListener('click', I18n.toggle);
       I18n.apply(false);
+      // 无手动选择时按 IP 给默认语言：越南 IP 默认越南语，其他默认中文
+      if (!Store.getSettings().lang) {
+        GeoLang.country().then((cc) => {
+          if (cc === 'VN' && !Store.getSettings().lang && I18n.cur !== 'vi') {
+            I18n.cur = 'vi';
+            I18n.apply(true);
+          }
+        });
+      }
     },
     toggle() {
       I18n.cur = I18n.cur === 'zh' ? 'vi' : 'zh';
@@ -511,6 +546,12 @@
     paintButton() {
       const btn = document.getElementById('lang-button');
       if (btn) btn.textContent = I18n.cur === 'zh' ? 'CN' : 'VN';
+    },
+    applyTitle(config) {
+      const c = config || {};
+      document.title = I18n.cur === 'vi'
+        ? (c.pageTitleVi || c.pageTitle || 'Câu chuyện của chúng ta')
+        : (c.pageTitle || '我们的故事');
     },
     apply(rerender) {
       document.documentElement.setAttribute('data-lang', I18n.cur);
@@ -527,6 +568,7 @@
       Lazy.observeNew();
       Management.refresh();
       Counter.renderHead(Data.cache.config || {});
+      I18n.applyTitle(Data.cache.config);
       Password.refreshStatus();
       Lightbox.relabel();
     },
@@ -882,7 +924,7 @@
       if (!Auth.isAuthed()) return;
       try {
         const data = await Data.get();
-        document.title = data.config?.pageTitle || '我们的故事';
+        I18n.applyTitle(data.config);
         Counter.renderHead(data.config || {});
         const events = Timeline.sort(Timeline.merge(data.timeline));
         Timeline.allEvents = events;
