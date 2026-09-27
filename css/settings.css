@@ -78,7 +78,7 @@ input:checked + .slider::before { transform: translateX(26px); }
   border: none;
   border-radius: 12px;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+  box-shadow: 0 4px 15px rgba(47, 111, 237, 0.25);
 }
 
 .settings-list .settings-button.secondary {
@@ -166,6 +166,7 @@ input:checked + .slider::before { transform: translateX(26px); }
 .form-group label { display: block; margin-bottom: 8px; font-size: 0.95em; font-weight: 500; }
 .form-group input[type="text"],
 .form-group input[type="date"],
+.form-group input[type="time"],
 .form-group input[type="password"],
 .form-group input[type="file"],
 .form-group textarea {
@@ -183,7 +184,7 @@ input:checked + .slider::before { transform: translateX(26px); }
 .form-group input:focus, .form-group textarea:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+  box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.25);
 }
 
 .form-group textarea { min-height: 80px; resize: vertical; }

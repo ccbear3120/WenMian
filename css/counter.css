@@ -14,7 +14,7 @@
   color: var(--counter-text);
   border-radius: 15px 15px 0 0;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background: linear-gradient(135deg, #7a5c3e, #4a3826);
+  background: linear-gradient(135deg, #4a90d9, #2456a0);
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
 }
 

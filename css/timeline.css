@@ -6,6 +6,90 @@
   border-radius: 0 0 15px 15px;
 }
 
+/* 筛选栏 */
+.filter-bar { margin-bottom: 16px; }
+
+#filter-keyword {
+  width: 100%;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  font-size: 0.95em;
+  font-family: inherit;
+  color: var(--modal-text);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 999px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#filter-keyword:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.15);
+}
+
+.filter-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-row select {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 6px;
+  font-size: 0.85em;
+  font-family: inherit;
+  color: var(--modal-text);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  outline: none;
+}
+
+.filter-clear {
+  padding: 8px 14px;
+  font-size: 0.85em;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.filter-clear:hover { color: var(--modal-text); border-color: var(--accent); }
+
+.filter-count {
+  margin-top: 8px;
+  font-size: 0.85em;
+  color: var(--muted);
+  text-align: center;
+}
+
+.filter-count:empty { display: none; }
+
+/* 类型角标 */
+.timeline-category {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 10px;
+  font-size: 0.75em;
+  font-weight: 500;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  border-radius: 999px;
+  vertical-align: middle;
+}
+
+/* 无结果 */
+.timeline-empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.95em;
+}
+
 .timeline-item {
   position: relative;
   padding: 18px;
@@ -32,6 +116,11 @@
   border-bottom-left-radius: 12px;
   border-top-right-radius: 10px;
   box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 越南语下置顶角标 */
+[data-lang="vi"] .timeline-item.pinned::after {
+  content: 'Ghim';
 }
 
 .timeline-days-badge {
@@ -84,6 +173,20 @@
 
 .image-container.loaded { aspect-ratio: auto; }
 
+/* 多图网格：2 张以上并排，窄屏自动单列 */
+.image-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.image-grid .image-container { margin-top: 0; }
+
+@media (max-width: 480px) {
+  .image-grid { grid-template-columns: 1fr; }
+}
+
 .image-container::after {
   content: '';
   position: absolute;
@@ -117,3 +220,94 @@
   0%, 100% { opacity: 0.3; background-color: var(--placeholder-bg); }
   50% { opacity: 0.9; background-color: var(--placeholder-bg-2); }
 }
+
+/* 第 4 格的“查看更多”角标 */
+.image-container.more .image-more-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  font-size: 1.6em;
+  font-weight: 700;
+}
+
+.image-more-overlay small {
+  font-size: 0.45em;
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+/* 全屏灯箱 */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 6000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.92);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.lightbox-img {
+  max-width: 92vw;
+  max-height: 86vh;
+  object-fit: contain;
+  border-radius: 8px;
+  touch-action: none;
+  transition: transform 0.12s ease-out;
+}
+
+.lightbox-counter {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  font-size: 1em;
+  opacity: 0.9;
+}
+
+.lightbox-close,
+.lightbox-prev,
+.lightbox-next,
+.lightbox-zoom-in,
+.lightbox-zoom-out {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.lightbox-close:hover,
+.lightbox-prev:hover,
+.lightbox-next:hover,
+.lightbox-zoom-in:hover,
+.lightbox-zoom-out:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.lightbox-close { top: 12px; right: 12px; width: 40px; height: 40px; }
+.lightbox-close svg { width: 22px; height: 22px; }
+.lightbox-prev, .lightbox-next { top: 50%; transform: translateY(-50%); width: 44px; height: 44px; }
+.lightbox-prev svg, .lightbox-next svg { width: 26px; height: 26px; }
+.lightbox-prev { left: 10px; }
+.lightbox-next { right: 10px; }
+.lightbox-zoom-out, .lightbox-zoom-in { bottom: 18px; width: 40px; height: 40px; }
+.lightbox-zoom-out svg, .lightbox-zoom-in svg { width: 20px; height: 20px; }
+.lightbox-zoom-out { right: 64px; }
+.lightbox-zoom-in { right: 12px; }

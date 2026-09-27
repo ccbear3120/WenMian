@@ -13,9 +13,9 @@
 </head>
 <body data-theme="light">
   <!-- 密码输入界面 -->
-  <div id="password-screen" class="password-screen" role="dialog" aria-modal="true" aria-label="密码验证">
+  <div id="password-screen" class="password-screen" role="dialog" aria-modal="true" data-i18n-aria="aria_pw" aria-label="密码验证">
     <div class="password-container">
-      <h2 class="password-title">请输入密码</h2>
+      <h2 class="password-title" data-i18n="pw_title">请输入密码</h2>
       <div class="password-dots" aria-hidden="true">
         <div class="dot"></div>
         <div class="dot"></div>
@@ -24,26 +24,26 @@
         <div class="dot"></div>
         <div class="dot"></div>
       </div>
-      <div class="keypad" role="group" aria-label="数字键盘">
+      <div class="keypad" role="group" data-i18n-aria="aria_keypad" aria-label="数字键盘">
         <div class="keypad-row">
-          <button type="button" class="key" data-value="1" aria-label="数字1">1</button>
-          <button type="button" class="key" data-value="2" aria-label="数字2">2</button>
-          <button type="button" class="key" data-value="3" aria-label="数字3">3</button>
+          <button type="button" class="key" data-value="1" aria-label="1">1</button>
+          <button type="button" class="key" data-value="2" aria-label="2">2</button>
+          <button type="button" class="key" data-value="3" aria-label="3">3</button>
         </div>
         <div class="keypad-row">
-          <button type="button" class="key" data-value="4" aria-label="数字4">4</button>
-          <button type="button" class="key" data-value="5" aria-label="数字5">5</button>
-          <button type="button" class="key" data-value="6" aria-label="数字6">6</button>
+          <button type="button" class="key" data-value="4" aria-label="4">4</button>
+          <button type="button" class="key" data-value="5" aria-label="5">5</button>
+          <button type="button" class="key" data-value="6" aria-label="6">6</button>
         </div>
         <div class="keypad-row">
-          <button type="button" class="key" data-value="7" aria-label="数字7">7</button>
-          <button type="button" class="key" data-value="8" aria-label="数字8">8</button>
-          <button type="button" class="key" data-value="9" aria-label="数字9">9</button>
+          <button type="button" class="key" data-value="7" aria-label="7">7</button>
+          <button type="button" class="key" data-value="8" aria-label="8">8</button>
+          <button type="button" class="key" data-value="9" aria-label="9">9</button>
         </div>
         <div class="keypad-row">
           <button type="button" class="key key-empty" aria-hidden="true" tabindex="-1"></button>
-          <button type="button" class="key" data-value="0" aria-label="数字0">0</button>
-          <button type="button" class="key key-delete" data-value="delete" aria-label="删除">
+          <button type="button" class="key" data-value="0" aria-label="0">0</button>
+          <button type="button" class="key key-delete" data-value="delete" data-i18n-aria="key_del" aria-label="删除">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <path d="M21 4H8l-7 8 7 8h13a2 2 0 002-2V6a2 2 0 00-2-2z"></path>
               <path d="M18 9l-6 6"></path>
@@ -60,21 +60,39 @@
       <div class="counter-text" id="counter-text"></div>
       <div class="counter-line">
         <span class="counter-days" id="counter-days">0</span>
-        <span class="counter-label">天</span>
+        <span class="counter-label" data-i18n="u_day">天</span>
       </div>
-      <div class="time-counter" id="time-counter" aria-label="精确时间">
-        <span class="time-unit">00</span><span class="time-label">年</span>
-        <span class="time-unit">00</span><span class="time-label">月</span>
-        <span class="time-unit">00</span><span class="time-label">日</span>
-        <span class="time-unit">00</span><span class="time-label">时</span>
-        <span class="time-unit">00</span><span class="time-label">分</span>
-        <span class="time-unit">00</span><span class="time-label">秒</span>
+      <div class="time-counter" id="time-counter" data-i18n-aria="aria_precise" aria-label="精确时间">
+        <span class="time-unit">00</span><span class="time-label" data-i18n="t_year">年</span>
+        <span class="time-unit">00</span><span class="time-label" data-i18n="t_month">月</span>
+        <span class="time-unit">00</span><span class="time-label" data-i18n="t_day">日</span>
+        <span class="time-unit">00</span><span class="time-label" data-i18n="t_hour">时</span>
+        <span class="time-unit">00</span><span class="time-label" data-i18n="t_min">分</span>
+        <span class="time-unit">00</span><span class="time-label" data-i18n="t_sec">秒</span>
       </div>
       <div class="start-date" id="start-date"></div>
     </div>
 
-    <div class="timeline-section" id="timeline-section" aria-live="polite">
-      <!-- 时间线由 JS 渲染 -->
+    <div class="timeline-section" id="timeline-section">
+      <div class="filter-bar" id="filter-bar">
+        <input type="search" id="filter-keyword" data-i18n-ph="ph_search" placeholder="搜索标题 / 描述…" data-i18n-aria="aria_f_search" aria-label="搜索事件" maxlength="50">
+        <div class="filter-row">
+          <select id="filter-year" data-i18n-aria="aria_f_year" aria-label="按年份筛选">
+            <option value="" data-i18n="opt_all_year">全部年份</option>
+          </select>
+          <select id="filter-month" data-i18n-aria="aria_f_month" aria-label="按月份筛选">
+            <option value="" data-i18n="opt_all_month">全部月份</option>
+          </select>
+          <select id="filter-category" data-i18n-aria="aria_f_category" aria-label="按类型筛选">
+            <option value="" data-i18n="opt_all_category">全部类型</option>
+          </select>
+          <button type="button" id="filter-clear" class="filter-clear" data-i18n="btn_clear">清除</button>
+        </div>
+        <div class="filter-count" id="filter-count" aria-live="polite"></div>
+      </div>
+      <div class="timeline-list" id="timeline-list" aria-live="polite">
+        <!-- 时间线由 JS 渲染 -->
+      </div>
     </div>
   </main>
 
@@ -179,6 +197,8 @@
     "pageTitle": "我们的故事",
     "counterTextBefore": "距离和面面在一起还有",
     "counterTextAfter": "和面面在一起已经",
+    "counterTextBeforeVi": "Còn",
+    "counterTextAfterVi": "Đã ở bên Văn Văn được",
     "passwordSalt": "be3358299d921167c64a08722baa9dac",
     "passwordHash": "e46b402b6f4a7efc68017403d9debf8f07db1ca6f9b87c9e735f83dbca8d7aba",
     "counterBackground": {
@@ -191,6 +211,7 @@
   "timeline": [
     {
       "date": "2025-05-08",
+      "time": "20:00",
       "title": "谨以此站，纪念我们在一起的时光",
       "description": "2025年5月8日我们相识, 2025年9月8日我们相爱<br>我希望以这种方式可以记录我们往后的点点滴滴",
       "image": "images/2025/1.jpg",
@@ -212,15 +233,30 @@
     <span class="tt-meteor" style="left:90%; animation-delay:.4s;"></span>
   </div>
 
-  <!-- 回到顶部按钮 -->
-  <div id="back-to-top" class="back-to-top" role="button" tabindex="0" aria-label="回到顶部">
+  <!-- 回到顶部按钮（解锁后显示） -->
+  <div id="back-to-top" class="back-to-top" role="button" tabindex="0" data-i18n-aria="aria_top" aria-label="回到顶部" style="display:none">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
       <path d="M12 19V5M5 12l7-7 7 7"/>
     </svg>
   </div>
 
-  <!-- 设置按钮 -->
-  <div id="settings-button" class="settings-button" role="button" tabindex="0" aria-label="打开设置">
+  <!-- 语言切换按钮 -->
+  <div id="lang-button" class="lang-button" role="button" tabindex="0" aria-label="切换语言 / Switch language">CN</div>
+
+  <!-- 背景音乐按钮 -->
+  <div id="music-button" class="music-button" role="button" tabindex="0" aria-label="背景音乐开/关" aria-pressed="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <g class="note-part">
+        <path d="M9 18V5l12-2v13"></path>
+        <circle cx="6" cy="18" r="3"></circle>
+        <circle cx="18" cy="16" r="3"></circle>
+      </g>
+      <line class="mute-line" x1="3" y1="3" x2="21" y2="21"></line>
+    </svg>
+  </div>
+
+  <!-- 设置按钮（解锁后显示） -->
+  <div id="settings-button" class="settings-button" role="button" tabindex="0" data-i18n-aria="aria_settings_btn" aria-label="打开设置" style="display:none">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
       <path d="M12 15a3 3 0 100-6 3 3 0 000 6z"></path>
       <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"></path>
@@ -228,30 +264,30 @@
   </div>
 
   <!-- 设置对话框 -->
-  <div id="settings-modal" class="settings-modal" role="dialog" aria-modal="true" aria-label="设置">
+  <div id="settings-modal" class="settings-modal" role="dialog" aria-modal="true" data-i18n-aria="aria_settings_dlg" aria-label="设置">
     <div class="settings-content">
-      <button type="button" class="settings-close-button" aria-label="关闭设置">
+      <button type="button" class="settings-close-button" data-i18n-aria="aria_close" aria-label="关闭设置">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M18 6L6 18M6 6l12 12"/>
         </svg>
       </button>
-      <h2>设置</h2>
+      <h2 data-i18n="set_title">设置</h2>
       <div class="settings-list">
         <div class="settings-item">
           <div class="settings-item-header">
-            <span class="settings-item-title">时间线显示顺序</span>
+            <span class="settings-item-title" data-i18n="set_order">时间线显示顺序</span>
             <label class="switch">
               <input type="checkbox" id="timeline-order" class="settings-checkbox">
               <span class="slider round"></span>
             </label>
           </div>
-          <div class="settings-item-description">切换时间线的显示顺序（正序/倒序）</div>
+          <div class="settings-item-description" data-i18n="set_order_desc">切换时间线的显示顺序（正序/倒序）</div>
         </div>
         <div class="settings-item theme-settings">
           <div class="theme-settings-row">
             <div class="theme-settings-label">
-              <span class="theme-settings-title">夜间模式</span>
-              <span class="theme-settings-description">切换到深色主题</span>
+              <span class="theme-settings-title" data-i18n="theme_dark">夜间模式</span>
+              <span class="theme-settings-description" data-i18n="theme_dark_desc">切换到深色主题</span>
             </div>
             <label class="switch">
               <input type="checkbox" id="dark-mode" class="settings-checkbox">
@@ -260,8 +296,8 @@
           </div>
           <div class="theme-settings-row">
             <div class="theme-settings-label">
-              <span class="theme-settings-title">跟随系统</span>
-              <span class="theme-settings-description">根据系统设置自动切换主题</span>
+              <span class="theme-settings-title" data-i18n="theme_sys">跟随系统</span>
+              <span class="theme-settings-description" data-i18n="theme_sys_desc">根据系统设置自动切换主题</span>
             </div>
             <label class="switch">
               <input type="checkbox" id="system-theme" class="settings-checkbox">
@@ -273,18 +309,18 @@
 
       <!-- 时间线管理 -->
       <div class="settings-section-divider"></div>
-      <h3 class="settings-section-title">时间线管理</h3>
+      <h3 class="settings-section-title" data-i18n="sec_timeline">时间线管理</h3>
       <div class="settings-list" id="timeline-management-list">
         <div class="settings-item">
-          <button type="button" id="add-timeline-btn" class="settings-button secondary btn btn-secondary" style="width:100%;">新增事件</button>
+          <button type="button" id="add-timeline-btn" class="settings-button secondary btn btn-secondary" style="width:100%;" data-i18n="btn_add">新增事件</button>
         </div>
         <div class="settings-item">
-          <button type="button" id="export-timeline-btn" class="settings-button secondary btn btn-secondary" style="width:100%;">导出 JSON</button>
+          <button type="button" id="export-timeline-btn" class="settings-button secondary btn btn-secondary" style="width:100%;" data-i18n="btn_export">导出 JSON</button>
         </div>
         <div class="settings-item">
-          <button type="button" id="sync-github-btn" class="settings-button secondary btn btn-secondary" style="width:100%;">同步到 GitHub</button>
+          <button type="button" id="sync-github-btn" class="settings-button secondary btn btn-secondary" style="width:100%;" data-i18n="btn_sync">同步到 GitHub</button>
         </div>
-        <div class="settings-item-description">「导出 JSON」是手动备份；配置下方 GitHub 信息后，可用「同步到 GitHub」把新增/修改直接写进仓库的 <code>data/timeline.json</code> 并自动重新部署</div>
+        <div class="settings-item-description" data-i18n-html="desc_mgmt">「导出 JSON」是手动备份；配置下方 GitHub 信息后，可用「同步到 GitHub」把新增/修改直接写进仓库的 <code>data/timeline.json</code> 并自动重新部署</div>
         <div id="github-sync-status" class="github-sync-status" aria-live="polite"></div>
         <div id="timeline-events-list" class="timeline-events-list"></div>
       </div>
@@ -294,49 +330,49 @@
       <h3 class="settings-section-title">GitHub 同步</h3>
       <div class="settings-list">
         <div class="form-group">
-          <label for="github-owner">仓库 Owner</label>
-          <input type="text" id="github-owner" placeholder="例如：zhangsan" maxlength="100" autocomplete="off">
+          <label for="github-owner" data-i18n="gh_owner">仓库 Owner</label>
+          <input type="text" id="github-owner" data-i18n-ph="ph_owner" placeholder="例如：zhangsan" maxlength="100" autocomplete="off">
         </div>
         <div class="form-group">
-          <label for="github-repo">仓库名</label>
-          <input type="text" id="github-repo" placeholder="例如：love-diary" maxlength="100" autocomplete="off">
+          <label for="github-repo" data-i18n="gh_repo">仓库名</label>
+          <input type="text" id="github-repo" data-i18n-ph="ph_repo" placeholder="例如：love-diary" maxlength="100" autocomplete="off">
         </div>
         <div class="form-group">
-          <label for="github-branch">分支</label>
+          <label for="github-branch" data-i18n="gh_branch">分支</label>
           <input type="text" id="github-branch" placeholder="main" maxlength="100" autocomplete="off">
         </div>
         <div class="form-group">
-          <label for="github-token">Token（需 Contents 读写权限）</label>
+          <label for="github-token" data-i18n="gh_token">Token（需 Contents 读写权限）</label>
           <input type="password" id="github-token" placeholder="github_pat_… 或 ghp_…" autocomplete="off">
         </div>
-        <div class="settings-item-description">Token 只保存在本机浏览器 localStorage。建议用 Fine-grained token，仅授权这一个仓库的 Contents 读写权限。获取位置：GitHub → Settings → Developer settings → Personal access tokens</div>
+        <div class="settings-item-description" data-i18n-html="desc_gh_token">Token 只保存在本机浏览器 localStorage。建议用 Fine-grained token，仅授权这一个仓库的 Contents 读写权限。获取位置：GitHub → Settings → Developer settings → Personal access tokens</div>
       </div>
 
       <!-- 密码安全 -->
       <div class="settings-section-divider"></div>
-      <h3 class="settings-section-title">密码安全</h3>
+      <h3 class="settings-section-title" data-i18n="sec_pwd">密码安全</h3>
       <div class="settings-list">
-        <div class="settings-item-description" id="password-current-status">读取中…</div>
+        <div class="settings-item-description" id="password-current-status" data-i18n="pwd_loading">读取中…</div>
         <div class="form-group">
-          <label for="new-password">新密码（6 位数字）</label>
-          <input type="password" id="new-password" placeholder="输入 6 位数字" inputmode="numeric" maxlength="6" autocomplete="off">
+          <label for="new-password" data-i18n="lb_newpwd">新密码（6 位数字）</label>
+          <input type="password" id="new-password" data-i18n-ph="ph_newpw" placeholder="输入 6 位数字" inputmode="numeric" maxlength="6" autocomplete="off">
         </div>
         <div class="settings-item">
-          <button type="button" id="set-password-btn" class="settings-button secondary btn btn-secondary" style="width:100%;">设为新密码</button>
+          <button type="button" id="set-password-btn" class="settings-button secondary btn btn-secondary" style="width:100%;" data-i18n="btn_setpwd">设为新密码</button>
         </div>
-        <div class="settings-item-description" id="password-mgmt-status">密码以 SHA-256 + 随机盐值存储，不再是明文。设置后需「同步到 GitHub」才会写入仓库文件</div>
+        <div class="settings-item-description" id="password-mgmt-status" data-i18n-html="desc_pwd">密码以 SHA-256 + 随机盐值存储，不再是明文。设置后需「同步到 GitHub」才会写入仓库文件</div>
       </div>
 
       <div class="settings-actions">
-        <button type="button" id="save-settings" class="settings-button btn btn-primary">保存设置</button>
+        <button type="button" id="save-settings" class="settings-button btn btn-primary" data-i18n="btn_save">保存设置</button>
       </div>
     </div>
   </div>
 
   <!-- 新增/编辑时间线事件模态框 -->
-  <div id="timeline-event-modal" class="settings-modal" role="dialog" aria-modal="true" aria-label="时间线事件">
+  <div id="timeline-event-modal" class="settings-modal" role="dialog" aria-modal="true" data-i18n-aria="aria_event_dlg" aria-label="时间线事件">
     <div class="settings-content timeline-event-form">
-      <button type="button" class="settings-close-button" id="close-timeline-event-modal" aria-label="关闭">
+      <button type="button" class="settings-close-button" id="close-timeline-event-modal" data-i18n-aria="aria_close2" aria-label="关闭">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M18 6L6 18M6 6l12 12"/>
         </svg>
@@ -345,35 +381,51 @@
       <form id="timeline-event-form">
         <input type="hidden" id="event-id" name="id">
         <div class="form-group">
-          <label for="event-date">日期</label>
+          <label for="event-date" data-i18n="f_date">日期</label>
           <input type="date" id="event-date" name="date" required>
         </div>
         <div class="form-group">
-          <label for="event-title">标题</label>
-          <input type="text" id="event-title" name="title" required placeholder="事件标题" maxlength="100">
+          <label for="event-time" data-i18n="f_time">时间（可选）</label>
+          <input type="time" id="event-time" name="time">
         </div>
         <div class="form-group">
-          <label for="event-description">描述</label>
-          <textarea id="event-description" name="description" rows="3" placeholder="事件描述（支持HTML）"></textarea>
+          <label for="event-title" data-i18n="f_title">标题</label>
+          <input type="text" id="event-title" name="title" required data-i18n-ph="ph_ev_title" placeholder="事件标题" maxlength="100">
         </div>
         <div class="form-group">
-          <label for="event-image">图片路径</label>
-          <input type="text" id="event-image" name="image" placeholder="images/xxx.jpg 或 完整URL" maxlength="500">
+          <label for="event-category" data-i18n="f_category">类型</label>
+          <input type="text" id="event-category" name="category" placeholder="如：旅行 / 美食 / 纪念日" maxlength="20" list="category-suggestions" autocomplete="off">
+          <datalist id="category-suggestions">
+            <option value="日常"></option>
+            <option value="约会"></option>
+            <option value="旅行"></option>
+            <option value="美食"></option>
+            <option value="纪念日"></option>
+            <option value="节日"></option>
+          </datalist>
         </div>
         <div class="form-group">
-          <label for="event-image-file">上传图片到 GitHub（可选）</label>
-          <input type="file" id="event-image-file" accept="image/*">
-          <div class="settings-item-description" id="event-image-upload-status">选择本地图片后自动上传到仓库 <code>images/&lt;年份&gt;/</code> 目录，并回填上面的路径</div>
+          <label for="event-description" data-i18n="f_desc">描述</label>
+          <textarea id="event-description" name="description" rows="3" data-i18n-ph="ph_ev_desc" placeholder="事件描述（支持HTML）"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="event-image" data-i18n="f_image">图片路径（一行一张，可多张）</label>
+          <textarea id="event-image" name="image" rows="2" data-i18n-ph="ph_ev_image" placeholder="images/xxx.jpg，一行一张，可填多张" maxlength="2000"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="event-image-file" data-i18n="f_upload">上传图片到 GitHub（可多选，一次最多 9 张）</label>
+          <input type="file" id="event-image-file" accept="image/*" multiple>
+          <div class="settings-item-description" id="event-image-upload-status" data-i18n-html="desc_ev_upload">选择本地图片后自动上传到仓库时间文件夹（北京时间命名，如 <code>images/260927_1212/</code>），并追加到上面的路径框</div>
         </div>
         <div class="form-group">
           <label class="checkbox-label" for="event-top">
             <input type="checkbox" id="event-top" name="top">
-            <span>置顶显示</span>
+            <span data-i18n="f_top">置顶显示</span>
           </label>
         </div>
         <div class="form-actions">
-          <button type="button" id="cancel-event-form" class="settings-button secondary">取消</button>
-          <button type="submit" class="settings-button">保存</button>
+          <button type="button" id="cancel-event-form" class="settings-button secondary" data-i18n="btn_cancel">取消</button>
+          <button type="submit" class="settings-button" data-i18n="btn_form_save">保存</button>
         </div>
       </form>
     </div>

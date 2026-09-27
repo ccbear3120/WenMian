@@ -1,5 +1,6 @@
-/* 悬浮组件：设置按钮、回到顶部、主题过场、两侧装饰 */
-#settings-button, .settings-button.fab {
+/* 悬浮组件：设置按钮、音乐按钮、回到顶部、主题过场、两侧装饰 */
+#settings-button, .settings-button.fab,
+#music-button, #lang-button {
   position: fixed;
   right: 20px;
   bottom: 20px;
@@ -17,14 +18,30 @@
   user-select: none;
 }
 
-#settings-button:hover { transform: scale(1.1); }
+#settings-button:hover, #music-button:hover, #lang-button:hover { transform: scale(1.1); }
 #settings-button.dragging { opacity: 0.8; cursor: grabbing; }
-#settings-button svg { width: 24px; height: 24px; color: var(--fab-text); }
+#settings-button svg, #music-button svg { width: 24px; height: 24px; color: var(--fab-text); }
+
+/* 语言按钮在音乐按钮上方，显示 CN / VN */
+#lang-button {
+  bottom: 140px;
+  font-size: 1.05em;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--fab-text);
+  font-family: sans-serif;
+}
+
+/* 音乐按钮紧贴在设置按钮上方 */
+#music-button { bottom: 80px; }
+#music-button .mute-line { display: none; }
+#music-button.muted .mute-line { display: block; }
+#music-button.muted .note-part { opacity: 0.4; }
 
 .back-to-top {
   position: fixed;
   right: 20px;
-  bottom: 80px;
+  bottom: 200px;
   z-index: 1000;
   width: 50px;
   height: 50px;
