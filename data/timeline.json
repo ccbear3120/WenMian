@@ -1,0 +1,27 @@
+{
+  "config": {
+    "startDate": "2025-09-08",
+    "startTime": "20:00:00",
+    "partnerName": "面面",
+    "pageTitle": "我们的故事",
+    "counterTextBefore": "距离和面面在一起还有",
+    "counterTextAfter": "和面面在一起已经",
+    "passwordSalt": "be3358299d921167c64a08722baa9dac",
+    "passwordHash": "e46b402b6f4a7efc68017403d9debf8f07db1ca6f9b87c9e735f83dbca8d7aba",
+    "counterBackground": {
+      "image": "images/default_bg.jpg",
+      "blur": "8px",
+      "opacity": 1,
+      "colorOverlay": "rgba(0, 0, 0, 0.25)"
+    }
+  },
+  "timeline": [
+    {
+      "date": "2025-05-08",
+      "title": "谨以此站，纪念我们在一起的时光",
+      "description": "2025年5月8日我们相识, 2025年9月8日我们相爱<br>我希望以这种方式可以记录我们往后的点点滴滴",
+      "image": "images/2025/1.jpg",
+      "top": true
+    }
+  ]
+}

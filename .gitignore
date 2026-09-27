@@ -1,0 +1,25 @@
+# IDE and Editor files
+.history/
+.vscode/
+.idea/
+*.iml
+*.iws
+*.ipr
+.DS_Store
+Thumbs.db
+
+# JetBrains IDE
+.idea_modules/
+*.iws
+*.ipr
+*.iml
+out/
+.idea/
+
+# VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace 
