@@ -23,3 +23,4 @@ out/
 !.vscode/launch.json
 !.vscode/extensions.json
 *.code-workspace 
+music_local_bak/
