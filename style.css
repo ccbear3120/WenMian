@@ -1,9 +1,0 @@
-/* 样式入口：按层叠顺序引入各模块（file:// 可用，无需构建）。
- * 如需调试单个模块，可在 index.html 中直接 <link> 对应文件替代此入口。 */
-@import url('variables.css');
-@import url('base.css');
-@import url('counter.css');
-@import url('timeline.css');
-@import url('password.css');
-@import url('settings.css');
-@import url('widgets.css');
