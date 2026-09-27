@@ -741,6 +741,7 @@
     raf: 0,
     els: {},
     start: null,
+    startMs: null,
 
     init() {
       Counter.els.section = document.querySelector('.counter-section');
@@ -755,6 +756,12 @@
         console.error('起始日期格式无效:', config.startDate);
         return;
       }
+      // 起始墙钟时间不变，按当前语言时区起算（CN=UTC+8，VN=UTC+7），中越动态时长相差 1 小时
+      const sm = /^(\d{2}):(\d{2})(?::(\d{2}))?/.exec(String(config.startTime || '00:00:00').trim());
+      const off = I18n.cur === 'vi' ? 7 : 8;
+      Counter.startMs = sm
+        ? Date.UTC(Counter.start.getFullYear(), Counter.start.getMonth(), Counter.start.getDate(), +sm[1] - off, +sm[2], +(sm[3] || 0))
+        : Counter.start.getTime();
       const today = startOfDay(new Date());
       const startDay = startOfDay(Counter.start);
       const diffMs = startDay.getTime() - today.getTime();
@@ -818,8 +825,8 @@
       Counter.raf = requestAnimationFrame(step);
     },
     tick() {
-      if (!Counter.start || Counter.els.units.length < 6) return;
-      const d = diffCalendar(Counter.start, new Date());
+      if (!Counter.start || Counter.startMs == null || Counter.els.units.length < 6) return;
+      const d = diffCalendar(new Date(Counter.startMs), new Date());
       const vals = [d.years, d.months, d.days, d.hours, d.minutes, d.seconds];
       Counter.els.units.forEach((el, i) => {
         el.textContent = pad2(vals[i]);
