@@ -10,10 +10,13 @@ on GitHub is the 1-line version.
 
 Stdlib only. Conservative on purpose:
   * .json -> json.loads + json.dumps(separators=(',',':')) (exact 1 line)
-  * .js   -> small tokenizer: strings/templates/regex kept verbatim,
-             // line comments become /* */ so joining lines is safe
-  * .css  -> whitespace runs collapse to one space, strings kept verbatim
-  * .html -> tags/comments collapse whitespace; <script>/<style> minified
+* .js   -> small tokenizer: strings/templates/regex kept verbatim,
+           all comments (//, /* */, <!-- -->) are dropped entirely;
+           a dropped comment still counts as separation so tokens never merge
+* .css  -> whitespace runs collapse to one space, strings kept verbatim,
+           /* */ comments are dropped (one space kept if needed to avoid merge)
+* .html -> tags collapse whitespace, <!-- --> comments are dropped;
+           <script>/<style> minified
              with the rules above; <pre>/<textarea> newlines become &#10;
              (renders the same, file stays 1 line)
   * anything else -> passthrough (exit 0, bytes unchanged)
@@ -76,10 +79,7 @@ def _lex_js_expr(s, i, n, toks, gaps, stop_on_brace):
             j = s.find("\n", i + 2)
             if j == -1:
                 j = n
-            body = s[i + 2:j].replace("*/", "*\\/")
-            toks.append(("/*" + body + "*/", gap))
-            gaps.append(True)
-            gap = True
+            gap = True  # 注释丢弃，但仍算分隔，防前后 token 粘连
             prev_rx = True
             i = j
             continue
@@ -87,8 +87,6 @@ def _lex_js_expr(s, i, n, toks, gaps, stop_on_brace):
             j = s.find("*/", i + 2)
             if j == -1:
                 raise ValueError("unterminated block comment")
-            body = re.sub(r"\s+", " ", s[i + 2:j])
-            toks.append(("/*" + body + "*/", gap))
             gap = True
             prev_rx = True
             i = j + 2
@@ -97,8 +95,6 @@ def _lex_js_expr(s, i, n, toks, gaps, stop_on_brace):
             j = s.find("\n", i + 4)
             if j == -1:
                 j = n
-            body = s[i + 4:j].replace("*/", "*\\/")
-            toks.append(("/*" + body + "*/", gap))
             gap = True
             prev_rx = True
             i = j
@@ -107,8 +103,6 @@ def _lex_js_expr(s, i, n, toks, gaps, stop_on_brace):
             j = s.find("\n", i + 3)
             if j == -1:
                 j = n
-            body = s[i + 3:j].replace("*/", "*\\/")
-            toks.append(("/*" + body + "*/", gap))
             gap = True
             prev_rx = True
             i = j
@@ -360,7 +354,9 @@ def one_line_css(src):
             j = s.find("*/", i + 2)
             if j == -1:
                 raise ValueError("unterminated CSS comment")
-            out.append("/*" + re.sub(r"\s+", " ", s[i + 2:j]) + "*/")
+            # 注释直接丢弃；前后若无空白则补一个空格，防 `0/*c*/auto` 粘连
+            if out and not out[-1].endswith(" "):
+                out.append(" ")
             i = j + 2
             continue
         if c in " \t\n\v\f":
@@ -415,8 +411,11 @@ def one_line_html(src):
             end = s.find("-->", lt + 4)
             if end == -1:
                 raise ValueError("unterminated HTML comment")
-            out.append(re.sub(r"\s+", " ", s[lt:end + 3]))
-            i = end + 3
+            i = end + 3  # HTML 注释直接丢弃（浏览器本来就不渲染它）
+            # 注释两侧的空白合并成一个：否则 `> <` 留下双空格，二次压缩漂移
+            if i < n and s[i] in " \t\n\v\f" and out and out[-1].endswith(" "):
+                while i < n and s[i] in " \t\n\v\f":
+                    i += 1
             continue
         m = re.match(r"<\s*(/?)\s*([A-Za-z][A-Za-z0-9]*)", s[lt:])
         tag, j = _scan_tag(s, lt)
@@ -534,9 +533,12 @@ def _cmd_test():
     )
     o = one_line_js(js)
     assert "\n" not in o, o
-    assert "head comment" in o and "tail" in o
+    assert "head comment" not in o and "tail" not in o and "块" not in o  # 注释全剥离
     assert "https://x.test/a//b" in o
     assert o == one_line_js(o), "JS not idempotent"
+    # 注释充当分隔：删掉也不能让 token 粘连
+    assert one_line_js("a/**/b") == "a b"
+    assert one_line_js("a/*x*/-/*y*/-b") == "a- -b"
     # division vs regex spot checks
     assert "1/2/3" in o, o
     assert "/^\\d{4}-(\\d{2})$/gi" in o, o
@@ -545,6 +547,8 @@ def _cmd_test():
     css = "a {\n  color: red; /* 注 */\n  content: \"x;y\";\n}\n"
     oc = one_line_css(css)
     assert oc.count("\n") == 0 and "content:" in oc and '"x;y"' in oc
+    assert "注" not in oc  # CSS 注释剥离
+    assert one_line_css("a{margin:0/*c*/auto}") == "a{margin:0 auto}"  # 防粘连空格
     # JSON
     assert one_line_json('{\n"a": [1, 2]\n}\n') == '{"a":[1,2]}'
     # HTML: script-json + pre + comment
@@ -554,6 +558,7 @@ def _cmd_test():
             "<pre>a\nb</pre>\n<p>x  y</p>\n</body></html>\n")
     oh = one_line_html(html)
     assert oh.count("\n") == 0, oh
+    assert "<!--" not in oh  # HTML 注释剥离
     assert '{"a":1}' in oh and "a&#10;b" in oh and "<p>x y</p>" in oh
     assert oh == one_line_html(oh), "HTML not idempotent"
     print("one-line.py self-test OK")
