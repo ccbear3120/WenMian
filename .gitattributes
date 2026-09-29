@@ -1,4 +1,5 @@
-# 本地保持多行可读，存进 git / 推到 GitHub 的是 1 行版本。
+# 工作区保持多行可读（checkout/pull 时 smudge 自动展开），
+# 存进 git / 推到 GitHub 的是 1 行版本（clean 压缩+剥离注释）。
 # 转换规则见 tools/one-line.py；新克隆后跑一遍 tools/setup-filter.sh 注册。
 *.js filter=oneline
 *.mjs filter=oneline
