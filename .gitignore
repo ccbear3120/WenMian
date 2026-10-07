@@ -25,3 +25,6 @@ out/
 *.code-workspace 
 music_local_bak/
 __pycache__/
+
+# 地图生成脚本的下载缓存（tools/gen-maps.py）
+tools/.map-cache/
