@@ -8,3 +8,5 @@
 *.html filter=oneline
 *.htm filter=oneline
 *.json filter=oneline
+# 该文件由 GitHub Actions 机器人直接写入并提交，跳过过滤器避免本地出现虚假改动
+rate/rates.json -filter
