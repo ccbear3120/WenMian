@@ -1,1 +1,15 @@
-{"updatedAt":"2026-11-26T18:32:31+08:00","unionpay":{"rate":2.224,"inverse":0.45,"dataDate":"20261126","expression":"1 BYN = 2.224 CNY"},"myfin":{"rate":3.003,"inverse":0.333,"quoteDate":"2026-11-26","expression":"1 USD = 3.003 BYN"}}
+{
+  "updatedAt": "2026-11-26T20:31:16+08:00",
+  "unionpay": {
+    "rate": 2.224,
+    "inverse": 0.45,
+    "dataDate": "20261126",
+    "expression": "1 BYN = 2.224 CNY"
+  },
+  "myfin": {
+    "rate": 3.003,
+    "inverse": 0.333,
+    "quoteDate": "2026-11-26",
+    "expression": "1 USD = 3.003 BYN"
+  }
+}
