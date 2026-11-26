@@ -1,10 +1,6 @@
 name: 每日更新汇率
 
 on:
-  schedule:
-    # 明斯克时间每小时第 25 分钟更新，避开整点负载高峰
-    - cron: '25 * * * *'
-      timezone: Europe/Minsk
   workflow_dispatch:  # 允许手动在 Actions 页面点击触发
 
 permissions:
