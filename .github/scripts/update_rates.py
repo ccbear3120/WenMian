@@ -11,7 +11,7 @@ import re
 import urllib.request
 from pathlib import Path
 
-BJ_TZ = datetime.timezone(datetime.timedelta(hours=8))
+MSK_TZ = datetime.timezone(datetime.timedelta(hours=3))
 UA = (
     "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) "
     "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1"
@@ -32,8 +32,8 @@ def http_get(url, ua, timeout=20):
 
 
 def fetch_unionpay():
-    """北京时间当天，周末/节假日回退到最近有数据的工作日（最多 10 天）。"""
-    today = datetime.datetime.now(BJ_TZ).date()
+    """明斯克时间当天，周末/节假日回退到最近有数据的工作日（最多 10 天）。"""
+    today = datetime.datetime.now(MSK_TZ).date()
     errors = []
     for back in range(10):
         day = today - datetime.timedelta(days=back)
@@ -68,7 +68,7 @@ def fetch_myfin():
         if not m2:
             return {"error": "未能从 Myfin 页面解析出汇率"}
         rate_str = m2.group(1)
-        quote_date = datetime.datetime.now(BJ_TZ).strftime("%Y-%m-%d")
+        quote_date = datetime.datetime.now(MSK_TZ).strftime("%Y-%m-%d")
     rate = float(rate_str.replace(",", ""))
     return {
         "rate": round(rate, 3),
@@ -80,7 +80,7 @@ def fetch_myfin():
 
 def main():
     data = {
-        "updatedAt": datetime.datetime.now(BJ_TZ).isoformat(timespec="seconds"),
+        "updatedAt": datetime.datetime.now(MSK_TZ).isoformat(timespec="seconds"),
         "unionpay": fetch_unionpay(),
         "myfin": fetch_myfin(),
     }
