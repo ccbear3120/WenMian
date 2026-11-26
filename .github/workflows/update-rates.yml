@@ -2,9 +2,20 @@ name: 每日更新汇率
 
 on:
   schedule:
-    # UTC 时间；北京时间 = UTC+8。每天 08:00 与 20:00 各更新一次
+    # UTC 时间；北京时间 = UTC+8。北京时间 0,2,4,6,8,10,12,14,16,17,18,20,22 点各更新一次
+    - cron: '0 16 * * *'
+    - cron: '0 18 * * *'
+    - cron: '0 20 * * *'
+    - cron: '0 22 * * *'
     - cron: '0 0 * * *'
+    - cron: '0 2 * * *'
+    - cron: '0 4 * * *'
+    - cron: '0 6 * * *'
+    - cron: '0 8 * * *'
+    - cron: '0 9 * * *'
+    - cron: '0 10 * * *'
     - cron: '0 12 * * *'
+    - cron: '0 14 * * *'
   workflow_dispatch:  # 允许手动在 Actions 页面点击触发
 
 permissions:
