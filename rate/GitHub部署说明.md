@@ -35,7 +35,7 @@ rate/rates.json                     ← 汇率数据（Actions 会自动更新�
 
 ## 三、数据更新机制
 
-- `.github/workflows/update-rates.yml` 配置了**每小时第 5 分钟**（明斯克时间）抓一次汇率，重新生成 `rates.json` 并自动提交。避开整点是为了减少 GitHub Actions 高负载导致任务被丢弃的概率。
+- `.github/workflows/update-rates.yml` 配置了**每小时第 10 分钟**（明斯克时间）抓一次汇率，重新生成 `rates.json` 并自动提交。避开整点是为了减少 GitHub Actions 高负载导致任务被丢弃的概率。
 - 也可以随时手动触发：仓库 `Actions` 页面 → 选「每日更新汇率」→ `Run workflow`。
 - 银联周末/节假日没有当日数据，脚本会自动回退到最近有数据的工作日。
 
