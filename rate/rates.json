@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-27T11:36:38+03:00",
+  "updatedAt": "2026-11-27T11:52:59+03:00",
   "unionpay": {
     "rate": 2.222,
     "inverse": 0.45,
@@ -7,9 +7,6 @@
     "expression": "1 BYN = 2.222 CNY"
   },
   "myfin": {
-    "rate": 3.006,
-    "inverse": 0.333,
-    "quoteDate": "2026-11-27",
-    "expression": "1 USD = 3.006 BYN"
+    "error": "无法获取 Myfin 数据: The read operation timed out"
   }
 }
