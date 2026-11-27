@@ -7,6 +7,7 @@ GitHub Actions 定时任务：抓取银联 CNY/BYN 与 Myfin USD/BYN 汇率，
 """
 import datetime
 import json
+import re
 import time
 import urllib.request
 from pathlib import Path
@@ -24,6 +25,7 @@ RATE_URL = "https://m.unionpayintl.com/jfimg/{date}.json"
 NBRB_URLS = (
     "https://www.nbrb.by/api/exrates/rates/USD?parammode=2",
     "https://www.nbrb.by/api/exrates/rates?periodicity=0",
+    "https://www.nbrb.by/",
 )
 OUT = Path(__file__).resolve().parent.parent.parent / "rate" / "rates.json"
 
@@ -57,23 +59,46 @@ def fetch_unionpay():
     return {"error": "暂时无法获取银联汇率", "detail": errors[-3:]}
 
 
+def parse_nbrb_json(text):
+    payload = json.loads(text)
+    if isinstance(payload, list):
+        payload = next((item for item in payload if item.get("Cur_Abbreviation") == "USD"), None)
+    if not payload or "Cur_OfficialRate" not in payload:
+        raise ValueError("响应中缺少 USD 官方汇率")
+    scale = float(payload.get("Cur_Scale", 1)) or 1
+    return float(payload["Cur_OfficialRate"]) / scale, str(payload.get("Date", ""))[:10]
+
+
+def parse_nbrb_home(text):
+    table = re.search(r"Курсы валют.*?<table>(.*?)</table>", text, re.S)
+    if not table:
+        raise ValueError("主页中未找到汇率表")
+    head = re.search(r"<tr>(.*?)</tr>", table.group(1), re.S)
+    row = re.search(r"<td>USD\s+\d+\s+Доллар США</td>(.*?)</tr>", table.group(1), re.S)
+    if not head or not row:
+        raise ValueError("主页中未找到 USD 行")
+    dates = re.findall(r"(\d{2})\.(\d{2})\.(\d{2})", head.group(1))
+    rates = re.findall(r"nominal[^>]*>\s*([\d.,]+)", row.group(1))
+    if not dates or not rates:
+        raise ValueError("主页中未解析出 USD 汇率")
+    idx = 0
+    today = datetime.datetime.now(MSK_TZ).strftime("%d.%m.%y")
+    for i, (dd, mm, yy) in enumerate(dates):
+        if f"{dd}.{mm}.{yy}" == today and i < len(rates):
+            idx = i
+            break
+    dd, mm, yy = dates[idx]
+    return float(rates[idx].replace(",", ".")), f"20{yy}-{mm}-{dd}"
+
+
 def fetch_myfin():
     """从 Myfin 国际站抓 1 USD = ? BYN。"""
     errors = []
-    for url in NBRB_URLS:
+    parsers = (parse_nbrb_json, parse_nbrb_json, parse_nbrb_home)
+    for url, parse in zip(NBRB_URLS, parsers):
         for attempt in range(2):
             try:
-                payload = json.loads(http_get(url, DESKTOP_UA, timeout=30))
-                if isinstance(payload, list):
-                    payload = next(
-                        (item for item in payload if item.get("Cur_Abbreviation") == "USD"),
-                        None,
-                    )
-                if not payload or "Cur_OfficialRate" not in payload:
-                    raise ValueError("响应中缺少 USD 官方汇率")
-                scale = float(payload.get("Cur_Scale", 1)) or 1
-                rate = float(payload["Cur_OfficialRate"]) / scale
-                quote_date = str(payload.get("Date", ""))[:10]
+                rate, quote_date = parse(http_get(url, DESKTOP_UA, timeout=30))
                 return {
                     "rate": round(rate, 3),
                     "inverse": round(1 / rate, 3),
