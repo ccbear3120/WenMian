@@ -7,6 +7,7 @@ GitHub Actions 定时任务：抓取银联 CNY/BYN 与 Myfin USD/BYN 汇率，
 """
 import datetime
 import json
+import time
 import urllib.request
 from pathlib import Path
 
@@ -20,7 +21,10 @@ DESKTOP_UA = (
     "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 )
 RATE_URL = "https://m.unionpayintl.com/jfimg/{date}.json"
-NBRB_URL = "https://www.nbrb.by/api/exrates/rates/USD?parammode=2"
+NBRB_URLS = (
+    "https://www.nbrb.by/api/exrates/rates/USD?parammode=2",
+    "https://www.nbrb.by/api/exrates/rates?periodicity=0",
+)
 OUT = Path(__file__).resolve().parent.parent.parent / "rate" / "rates.json"
 
 
@@ -55,26 +59,46 @@ def fetch_unionpay():
 
 def fetch_myfin():
     """从 Myfin 国际站抓 1 USD = ? BYN。"""
-    try:
-        payload = json.loads(http_get(NBRB_URL, DESKTOP_UA))
-        scale = float(payload.get("Cur_Scale", 1)) or 1
-        rate = float(payload["Cur_OfficialRate"]) / scale
-        quote_date = str(payload.get("Date", ""))[:10]
-    except Exception as exc:  # noqa: BLE001
-        return {"error": f"无法获取 Myfin 数据: {exc}"}
-    return {
-        "rate": round(rate, 3),
-        "inverse": round(1 / rate, 3),
-        "quoteDate": quote_date,
-        "expression": f"1 USD = {round(rate,3)} BYN",
-    }
+    errors = []
+    for url in NBRB_URLS:
+        for attempt in range(2):
+            try:
+                payload = json.loads(http_get(url, DESKTOP_UA, timeout=30))
+                if isinstance(payload, list):
+                    payload = next(
+                        (item for item in payload if item.get("Cur_Abbreviation") == "USD"),
+                        None,
+                    )
+                if not payload or "Cur_OfficialRate" not in payload:
+                    raise ValueError("响应中缺少 USD 官方汇率")
+                scale = float(payload.get("Cur_Scale", 1)) or 1
+                rate = float(payload["Cur_OfficialRate"]) / scale
+                quote_date = str(payload.get("Date", ""))[:10]
+                return {
+                    "rate": round(rate, 3),
+                    "inverse": round(1 / rate, 3),
+                    "quoteDate": quote_date,
+                    "expression": f"1 USD = {round(rate,3)} BYN",
+                }
+            except Exception as exc:  # noqa: BLE001
+                errors.append(f"{url}: {exc}")
+                time.sleep(2 * (attempt + 1))
+    return {"error": f"无法获取 Myfin 数据: {errors[-1]}"}
 
 
 def main():
+    myfin = fetch_myfin()
+    if "error" in myfin:
+        try:
+            previous = json.loads(OUT.read_text(encoding="utf-8")).get("myfin", {})
+            if previous.get("rate"):
+                myfin = previous
+        except Exception:  # noqa: BLE001
+            pass
     data = {
         "updatedAt": datetime.datetime.now(MSK_TZ).isoformat(timespec="seconds"),
         "unionpay": fetch_unionpay(),
-        "myfin": fetch_myfin(),
+        "myfin": myfin,
     }
     OUT.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("rates.json 已更新:", json.dumps(data, ensure_ascii=False))
