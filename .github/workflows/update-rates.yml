@@ -1,7 +1,7 @@
 name: 每日更新汇率
 
 on:
-  workflow_dispatch:  # 允许手动在 Actions 页面点击触发
+  workflow_dispatch:  # 允许外部脚本或手动在 Actions 页面触发
 
 permissions:
   contents: write

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-GitHub Actions 定时任务：抓取银联 CNY/BYN 与 Myfin USD/BYN 汇率，
-生成根目录的 rates.json 供静态页面读取（同源，无 CORS 问题）。
+GitHub Actions 汇率更新任务：抓取银联 CNY/BYN 与 NBRB USD/BYN 汇率，
+生成 rate/rates.json 供静态页面读取（同源，无 CORS 问题）。
 仅使用 Python 标准库，无需安装任何依赖。
 """
 import datetime
@@ -92,7 +92,7 @@ def parse_nbrb_home(text):
 
 
 def fetch_myfin():
-    """从 Myfin 国际站抓 1 USD = ? BYN。"""
+    """从白俄国家银行（NBRB）抓 1 USD = ? BYN。"""
     errors = []
     parsers = (parse_nbrb_json, parse_nbrb_json, parse_nbrb_home)
     for url, parse in zip(NBRB_URLS, parsers):
