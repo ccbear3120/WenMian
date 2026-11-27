@@ -7,7 +7,6 @@ GitHub Actions 定时任务：抓取银联 CNY/BYN 与 Myfin USD/BYN 汇率，
 """
 import datetime
 import json
-import re
 import urllib.request
 from pathlib import Path
 
@@ -21,7 +20,7 @@ DESKTOP_UA = (
     "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 )
 RATE_URL = "https://m.unionpayintl.com/jfimg/{date}.json"
-MYFIN_URL = "https://myfin.uk/currency-converter/usd-byn"
+NBRB_URL = "https://www.nbrb.by/api/exrates/rates/USD?parammode=2"
 OUT = Path(__file__).resolve().parent.parent.parent / "rate" / "rates.json"
 
 
@@ -57,19 +56,12 @@ def fetch_unionpay():
 def fetch_myfin():
     """从 Myfin 国际站抓 1 USD = ? BYN。"""
     try:
-        html = http_get(MYFIN_URL, DESKTOP_UA)
+        payload = json.loads(http_get(NBRB_URL, DESKTOP_UA))
+        scale = float(payload.get("Cur_Scale", 1)) or 1
+        rate = float(payload["Cur_OfficialRate"]) / scale
+        quote_date = str(payload.get("Date", ""))[:10]
     except Exception as exc:  # noqa: BLE001
         return {"error": f"无法获取 Myfin 数据: {exc}"}
-    m = re.search(r"today,\s*(\d{4}-\d{2}-\d{2})\s*is\s*([\d.,]+)\s*BYN", html)
-    if m:
-        quote_date, rate_str = m.group(1), m.group(2)
-    else:
-        m2 = re.search(r"1 USD\s*=\s*</span>\s*<span[^>]*>\s*([\d.,]+)\s*BYN", html)
-        if not m2:
-            return {"error": "未能从 Myfin 页面解析出汇率"}
-        rate_str = m2.group(1)
-        quote_date = datetime.datetime.now(MSK_TZ).strftime("%Y-%m-%d")
-    rate = float(rate_str.replace(",", ""))
     return {
         "rate": round(rate, 3),
         "inverse": round(1 / rate, 3),
